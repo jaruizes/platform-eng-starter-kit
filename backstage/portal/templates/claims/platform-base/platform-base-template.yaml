@@ -1,0 +1,56 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: claim-platform-base-template
+  title: Claim platform base
+  description: Platform Base claim form
+spec:
+  owner: user:guest
+  type: claim
+
+  parameters:
+    - title: Rellena los siguientes datos
+      required:
+        - team
+      properties:
+        team:
+          title: Nombre del equipo
+          type: string
+          description: Indica el nombre del equipo que realiza la petición
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          team: ${{ parameters.team }}
+
+    - id: claim-pr
+      name: Claim Pull-Request
+      action: publish:github:pull-request
+      input:
+        title: Platform base claim (${{ parameters.team }})
+        description: Solicitud de plataforma base por el equipo ${{ parameters.team }}
+        repoUrl: github.com?repo=platform-argo-crossplane&owner=jaruizes
+        branchName: claims-pr
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        catalogInfoUrl: http://github.com/jaruizes/platform-argo-crossplane/tree/claims-pr/backstage-repository/catalog/generated/claims/${{ parameters.team }}/platform-base/catalog-info.yaml
+        optional: true
+
+  output:
+    links:
+      - title: Pull Request URL
+        url: ${{ steps['claim-pr'].output.remoteUrl }}
+      - title: Abrir en catálogo
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}

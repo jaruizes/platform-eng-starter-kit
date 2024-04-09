@@ -1,0 +1,119 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: platform
+  labels:
+    provider: aws
+spec:
+  patchSets:
+    - name: metadata
+      patches:
+        - fromFieldPath: metadata.labels
+  compositeTypeRef:
+    apiVersion: jaruiz.crossplane.io/v1
+    kind: Platform
+  resources:
+    - name: platform-infra
+      base:
+        apiVersion: jaruiz.crossplane.io/v1
+        kind: PlatformInfra
+        metadata:
+          annotations:
+            uptest.upbound.io/timeout: "2400"
+        spec:
+          name: products
+      patches:
+        - fromFieldPath: spec.name
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-platform-infra"
+        - fromFieldPath: spec.name
+          toFieldPath: spec.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s"
+      readinessChecks:
+        - type: MatchString
+          fieldPath: status.atProvider.status
+          matchString: ACTIVE
+
+
+    - name: platform-tools
+      base:
+        apiVersion: jaruiz.crossplane.io/v1
+        kind: PlatformTools
+        metadata:
+          annotations:
+            uptest.upbound.io/timeout: "2400"
+        spec:
+          name: products
+          references:
+            - dependsOn:
+                apiVersion: jaruiz.crossplane.io/v1
+                kind: PlatformInfra
+                name: bar
+      patches:
+        - fromFieldPath: spec.name
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-platform-tools"
+        - fromFieldPath: spec.name
+          toFieldPath: spec.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s"
+        - fromFieldPath: spec.name
+          toFieldPath: spec.references[0].dependsOn.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-platform-infra"
+      readinessChecks:
+        - type: MatchString
+          fieldPath: status.atProvider.status
+          matchString: ACTIVE
+
+
+    - name: platform-cicd
+      base:
+        apiVersion: jaruiz.crossplane.io/v1
+        kind: PlatformCICD
+        metadata:
+          annotations:
+            uptest.upbound.io/timeout: "2400"
+        spec:
+          name: products
+          references:
+            - dependsOn:
+                apiVersion: jaruiz.crossplane.io/v1
+                kind: PlatformInfra
+                name: bar
+      patches:
+        - fromFieldPath: spec.name
+          toFieldPath: metadata.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-platform-tools"
+        - fromFieldPath: spec.name
+          toFieldPath: spec.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s"
+        - fromFieldPath: spec.name
+          toFieldPath: spec.references[0].dependsOn.name
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-platform-infra"
+      readinessChecks:
+        - type: MatchString
+          fieldPath: status.atProvider.status
+          matchString: ACTIVE

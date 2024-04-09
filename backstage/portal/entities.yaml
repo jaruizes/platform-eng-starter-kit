@@ -1,0 +1,458 @@
+###############################
+# Domains
+###############################
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: sales
+  title: Sales
+  description: Sales Domain
+spec:
+  owner: sales-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: marketing
+  title: Marketing
+  description: Marketing Domain
+spec:
+  owner: marketing-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: orders
+  title: Orders
+  description: Orders Domain
+spec:
+  owner: orders-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: products
+  title: Products
+  description: Products Domain
+spec:
+  owner: products-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: shipping
+  title: Shipping
+  description: Shipping Domain
+spec:
+  owner: shipping-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: customers
+  title: Customers
+  description: Customers Domain
+spec:
+  owner: customers-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: platform
+  title: Platform
+  description: Platform Domain
+spec:
+  owner: plaform-team
+---
+###############################
+# SYSTEMS
+###############################
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: crm
+  title: Salesforce
+  description: "CRM System"
+  tags:
+    - crm
+  links:
+    - url: https://www.salesforce.com/es/campaign/sem/salesforce-products/?d=70130000000tIs5&utm_source=google&utm_medium=sem&utm_campaign=es_alllobcon&utm_content=_70130000000tIs5&soc=Google-salesforce-products&ef_id=CjwKCAjw3oqoBhAjEiwA_UaLtkxdgxjamp95SmNMbZNX7DRwQH4OKfD-avSoNaCCtbXHhMmDMXJVfhoCAO8QAvD_BwE:G:s&s_kwcid=AL!7501!3!643339992617!e!!g!!salesforce%20crm&&mkwid=s&pcrid=643339992617&pkw=salesforce%20crm&pmt=e&pdv=c&gad=1&gclid=CjwKCAjw3oqoBhAjEiwA_UaLtkxdgxjamp95SmNMbZNX7DRwQH4OKfD-avSoNaCCtbXHhMmDMXJVfhoCAO8QAvD_BwE&gclsrc=aw.ds
+      title: Salesforce
+spec:
+  owner: user:guest
+  domain: customers
+  profile:
+    displayName: Salesforce CRM
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: products
+  title: Products
+  description: 'Products System'
+  tags:
+    - products
+spec:
+  owner: user:guest
+  profile:
+    displayName: Products
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: backstage
+  title: Backstage
+  description: 'Backstage is an open-source CNCF project often used by platform engineers to improving the developer experience'
+  tags:
+    - backstage
+  links:
+    - url: https://bckstage.io/
+      title: Backstage Website
+      type: website
+      icon: WebAsset
+    - url: https://backstage.io/docs/
+      title: Backstage Documentation
+      type: website
+      icon: WebAsset
+    - url: https://backstage.spotify.com/learn/
+      title: Backstage Learning Zone
+      type: website
+      icon: WebAsset
+spec:
+  owner: platform-team
+  profile:
+    displayName: Backstage
+---
+####################################
+# COMPONENTS
+####################################
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: backstage
+  description: 'Backstage is an open-source CNCF project often used by platform engineers to improving the developer experience.'
+  links:
+    - url: https://bckstage.io/
+      title: Backstage Website
+      type: website
+      icon: WebAsset
+    - url: https://backstage.io/docs/
+      title: Backstage Documentation
+      type: website
+      icon: WebAsset
+    - url: https://backstage.spotify.com/learn/
+      title: Backstage Learning Zone
+      type: website
+      icon: WebAsset
+  tags:
+    - backstage
+spec:
+  type: service
+  lifecycle: production
+  providesApis:
+    - catalog-api
+  owner: user:guest
+  system: backstage
+  profile:
+    displayName: Backstage
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: software-catalog
+  description: 'The catalog component of Tanzu Developer Portal acts as a centralized location for tracking registering applications, libraries, etc.'
+  links:
+    - url: https://backstage.io/docs/features/software-catalog/catalog-customization/
+      title: Catalog Customization
+      type: website
+      icon: WebAsset
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/1.5/tap/cli-plugins-tanzu-cli.html
+      title: Documentation (v1.5)
+      type: website
+      icon: WebAsset
+    - url: https://via.vmw.com/tap
+      title: Tanzu Developer Portal (Product Homepage)
+      type: website
+      icon: WebAsset
+  tags:
+    - backstage
+    - catalog
+spec:
+  type: service
+  lifecycle: production
+  providesApis:
+    - catalog-api
+  owner: user:guest
+  profile:
+    displayName: Software Catalog
+  dependsOn:
+    - component:backstage
+  subcomponentOf: backstage
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: api-docs
+  description: 'API Docs provide a window into the APIs running on your systems.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - api-docs
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  profile:
+    displayName: API Docs
+  dependsOn:
+    - component:backstage
+  subcomponentOf: backstage
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tech-docs
+  description: 'TechDocs allows you to create and share rich website content that describe your apps.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - tech-docs
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  profile:
+    displayName: Tech Docs
+  dependsOn:
+    - component:backstage
+  subcomponentOf: backstage
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: search
+  description: 'Search through Backstage registered assets.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - search
+    - api-docs
+    - tech-docs
+    - software-catalog
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  profile:
+    displayName: Search
+  dependsOn:
+    - component:backstage
+  subcomponentOf: backstage
+---
+####################################
+# DEV PORTAL COMPONENTS
+####################################
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: application-accelerators
+  description: 'Application Accelerators are coding templates that help you start new projects quickly whilst still following the golden path.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - application-accelerators
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: tanzu-developer-portal
+  profile:
+    displayName: Application Accelerators
+  dependsOn:
+    - component:backstage
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: api-auto-registration
+  description: 'Automatically registers common API specifications into the API Docs viewer.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - api-auto-registration
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: tanzu-developer-portal
+  profile:
+    displayName: API Auto-registration
+  dependsOn:
+    - component:backstage
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: resource-viewer
+  description: 'Resource Viewer allow you to inspect the status of your Kubernetes deployments.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - resource-viewer
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: tanzu-developer-portal
+  profile:
+    displayName: Runtime Resources
+  dependsOn:
+    - component:backstage
+    - system:kubernetes
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: application-live-view
+  description: 'Application Live View lets you introspect the runtime status of any compatible apps. '
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - application-live-view
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: tanzu-developer-portal
+  profile:
+    displayName: Application Live View
+  dependsOn:
+    - component:backstage
+---
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tanzu-developer-portal-configurator
+  description: 'The Tanzu Developer Portal Configurator lets you choose which Backstage plugins to include in your portal.'
+  links:
+    - url: https://docs.vmware.com/en/VMware-tanzu-developer-portal/index.html
+      title: Documentation
+      type: website
+      icon: WebAsset
+  tags:
+    - tanzu-developer-portal
+    - backstage
+    - tanzu-developer-portal-configurator
+spec:
+  type: service
+  lifecycle: production
+  owner: user:guest
+  system: tanzu-developer-portal
+  profile:
+    displayName: Tanzu Developer Portal Configurator
+  dependsOn:
+    - component:backstage
+---
+
+######################################
+# APIs
+######################################
+
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: catalog-api
+  description: 'The software catalog backend has a JSON based REST API, which can be leveraged by external systems.'
+  tags:
+    - api
+    - catalog-api
+    - catalog
+  links:
+    - url: https://backstage.io/docs/features/software-catalog/software-catalog-api/
+      title: Catalog API Documentation
+      type: website
+      icon: WebAsset
+spec:
+  type: openapi
+  lifecycle: production
+  owner: user:guest
+  definition:
+    $text: https://github.com/backstage/backstage/blob/master/plugins/catalog-backend/src/schema/openapi.yaml
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: cluster-api
+  description: 'Cluster API is a Kubernetes subproject focused on providing declarative APIs and tooling to simplify provisioning, upgrading, and operating multiple Kubernetes clusters.'
+  tags:
+    - api
+    - kubernetes
+  links:
+    - url: https://cluster-api.sigs.k8s.io/
+      title: Cluster API Book
+      type: website
+      icon: WebAsset
+    - url: https://github.com/kubernetes-sigs/cluster-api
+      title: Cluster API Source Code
+      type: source
+      icon: github
+spec:
+  type: openapi
+  lifecycle: production
+  owner: user:guest
+  definition:
+    $text: https://github.com/kubernetes/kubernetes/blob/master/api/openapi-spec/swagger.json
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: customers-asyncapi
+  title: Customers Asyncapi
+  description: 'Cluster API is a Kubernetes subproject focused on providing declarative APIs and tooling to simplify provisioning, upgrading, and operating multiple Kubernetes clusters.'
+  tags:
+    - asyncapi
+spec:
+  type: asyncapi
+  lifecycle: production
+  owner: user:guest
+  definition:
+    $text: https://github.com/jaruizes/eda-practical-design/blob/main/contracts/clients-service.yaml
+---
